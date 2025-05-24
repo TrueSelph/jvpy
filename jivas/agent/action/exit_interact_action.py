@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 from jaclang import *
+
 from jivas.agent.action.interact_action import InteractAction
 from jivas.agent.action.interact_graph_walker import interact_graph_walker
+
 
 class ExitInteractAction(InteractAction, Node):
     label: str = field("ExitInteractAction")

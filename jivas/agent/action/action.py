@@ -1,10 +1,15 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
+
+from jaclang import *
+
 from jivas.agent.core.graph_node import GraphNode
 
+
 class Action(GraphNode, Node):
+
     version: str = field("")
     label: str = field("")
     description: str = field("basic agent action")
@@ -15,8 +20,8 @@ class Action(GraphNode, Node):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.protected_attrs += JacList(["_package", "label", "version", "agent_id"])
-        self.transient_attrs += JacList(["agent_id"])
+        self.protected_attrs += ["_package", "label", "version", "agent_id"]
+        self.transient_attrs += ["agent_id"]
 
     def on_register(self) -> None:
         pass

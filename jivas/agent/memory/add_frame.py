@@ -1,8 +1,12 @@
 from __future__ import annotations
-from jaclang import *
+
 from typing import Optional
-from jivas.agent.memory.memory_walker import memory_walker
+
+from jaclang import *
+
 from jivas.agent.memory.memory import Memory
+from jivas.agent.memory.memory_walker import memory_walker
+
 
 class add_frame(memory_walker, Walker):
     label: str = field("")

@@ -1,14 +1,17 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
+from dataclasses import MISSING, fields
 from logging import Logger
+
+from jaclang import *
+
 from jivas.agent.modules.agentlib.utils import Utils
-from dataclasses import fields, MISSING
 
 
 class GraphNode(Node):
     id: str = field("")
-    protected_attrs: list = field(gen=lambda: JacList(["id"]))
+    protected_attrs: list = field(gen=lambda: ["id"])
     transient_attrs: list = field(
         gen=lambda: JacList(
             ["__jac__", "protected_attrs", "transient_attrs", "package_path"]
@@ -27,7 +30,7 @@ class GraphNode(Node):
     def get_parent_type(self) -> str:
         return type(super()()).__name__
 
-    def export(self, ignore_keys: list = JacList([]), clean: bool = False) -> dict:
+    def export(self, ignore_keys: list = [], clean: bool = False) -> dict:
         if clean:
             ignore_keys = ignore_keys + self.transient_attrs
             architype_context = {}

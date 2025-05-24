@@ -1,9 +1,12 @@
 from __future__ import annotations
+
 from jaclang import *
-from jivas.agent.core.agent import Agent
+
 from jivas.agent.action.action import Action
 from jivas.agent.action.actions import Actions
 from jivas.agent.action.interact_graph_walker import interact_graph_walker
+from jivas.agent.core.agent import Agent
+
 
 class pulse(interact_graph_walker, Walker):
     action_label: str = field("")

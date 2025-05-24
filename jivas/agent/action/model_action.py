@@ -1,11 +1,16 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 import traceback
-from typing import Optional
 from logging import Logger
+from typing import Optional, Union
+
+from jaclang import *
+
 from jivas.agent.action.action import Action
+from jivas.agent.memory.interaction import Interaction
 from jivas.agent.modules.agentlib.utils import Utils
+
 
 class ModelAction(Action, Node):
     logger: static[Logger] = logging.getLogger(__name__)
@@ -35,7 +40,7 @@ class ModelAction(Action, Node):
         ):
             if interaction_node:
                 if "ModelActionResult" not in interaction_node.context_data:
-                    interaction_node.context_data["ModelActionResult"] = JacList([])
+                    interaction_node.context_data["ModelActionResult"] = []
                 interaction_node.context_data["ModelActionResult"].append(
                     model_action_result.export()
                 )
@@ -48,7 +53,7 @@ class ModelAction(Action, Node):
     def healthcheck(self) -> Union[bool, dict]:
         if self.model_name == "" or self.api_key == "":
             return False
-        test_prompt_messages = JacList([{"system": "Output the result of 2 + 2"}])
+        test_prompt_messages = [{"system": "Output the result of 2 + 2"}]
         test_kwargs = {
             "model_name": self.model_name,
             "model_temperature": self.model_temperature,
@@ -120,6 +125,6 @@ class ModelActionResult(Obj):
     def get_generator(self) -> None:
         return self.generator
 
-    def export(self, ignore_keys: list = JacList(["__jac__"])) -> None:
+    def export(self, ignore_keys: list = ["__jac__"]) -> None:
         node_export = Utils.export_to_dict(self, ignore_keys)
         return node_export

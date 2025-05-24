@@ -1,7 +1,10 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
+
+from jaclang import *
+
 
 class purge(Walker):
     purge_spawn_node: bool = field(True)

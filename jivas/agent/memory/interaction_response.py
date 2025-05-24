@@ -1,9 +1,12 @@
 from __future__ import annotations
-from jaclang import *
-from enum import Enum, auto
-from enum import unique
+
+from enum import Enum, auto, unique
 from typing import Any
+
+from jaclang import *
+
 from jivas.agent.modules.agentlib.utils import Utils
+
 
 @unique
 class MessageType(Enum):

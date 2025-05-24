@@ -1,11 +1,14 @@
 from __future__ import annotations
+
 from jaclang import *
+
 from jivas.agent.action.action import Action
 from jivas.agent.action.interact_graph_walker import interact_graph_walker
 
+
 class InteractAction(Action, Node):
-    anchors: list = field(gen=lambda: JacList([]))
-    functions: list = field(gen=lambda: JacList([]))
+    anchors: list = field(gen=lambda: [])
+    functions: list = field(gen=lambda: [])
     weight: int = field(0)
 
     @abstract

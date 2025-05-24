@@ -1,9 +1,13 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
-from typing import Union
 from logging import Logger
+from typing import Union
+
+from jaclang import *
+
 from jivas.agent.action.action import Action
+
 
 class STTAction(Action, Node):
     logger: static[Logger] = logging.getLogger(__name__)

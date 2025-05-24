@@ -1,7 +1,10 @@
 from __future__ import annotations
+
 from jaclang import *
-from jivas.agent.memory.memory_walker import memory_walker
+
 from jivas.agent.memory.memory import Memory
+from jivas.agent.memory.memory_walker import memory_walker
+
 
 class update_frame(memory_walker, Walker):
     session_id: str = field("")

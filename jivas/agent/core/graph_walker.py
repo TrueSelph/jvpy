@@ -1,9 +1,13 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
-from jivas.agent.modules.agentlib.utils import Utils
+
+from jaclang import *
+
 from jivas.agent.core.app import App
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class graph_walker(Walker):
     reporting: bool = field(True)
@@ -19,7 +23,7 @@ class graph_walker(Walker):
                 "App graph not initialized. Import an agent and try again."
             )
 
-    def export(self, ignore_keys: list = JacList(["__jac__"])) -> None:
+    def export(self, ignore_keys: list = ["__jac__"]) -> None:
         node_export = Utils.export_to_dict(self, ignore_keys)
         return node_export
 

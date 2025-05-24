@@ -1,14 +1,18 @@
 from __future__ import annotations
-from jaclang import *
-import yaml
+
 import io
 import logging
 import traceback
 from logging import Logger
-from jivas.agent.core.agents import Agents
+
+import yaml
+from jaclang import *
+
 from jivas.agent.core.agent_graph_walker import agent_graph_walker
+from jivas.agent.core.agents import Agents
 from jivas.agent.core.import_agent import import_agent
 from jivas.agent.modules.agentlib.utils import jvdata_file_interface
+
 
 class init_agents(agent_graph_walker, Walker):
     reporting: bool = field(False)
@@ -16,7 +20,7 @@ class init_agents(agent_graph_walker, Walker):
 
     class __specs__(Obj):
         private: static[bool] = False
-        excluded: static[list] = JacList(["agent_id"])
+        excluded: static[list] = ["agent_id"]
 
     @with_entry
     def on_agents(self, here: Agents) -> None:

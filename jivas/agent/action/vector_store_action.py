@@ -1,22 +1,25 @@
 from __future__ import annotations
-from jaclang import *
-import math
+
 import json
-import yaml
 import logging
+import math
 import traceback
-from typing import Any, Tuple
 from logging import Logger
+from typing import Any, Tuple, Union
+
+import yaml
 from action import Action
-from jivas.agent.modules.agentlib.utils import Utils
-from jivas.agent.action.interact_graph_walker import interact_graph_walker
+from jaclang import *
 from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import CharacterTextSplitter
-from langchain_core.vectorstores.base import VectorStore
 from langchain_core.documents.base import Document
-from langchain_openai import OpenAIEmbeddings
-from langchain_openai import AzureOpenAIEmbeddings
+from langchain_core.vectorstores.base import VectorStore
+from langchain_openai import AzureOpenAIEmbeddings, OpenAIEmbeddings
+from langchain_text_splitters import CharacterTextSplitter
+
+from jivas.agent.action.interact_graph_walker import interact_graph_walker
+from jivas.agent.modules.agentlib.utils import Utils
 from jivas.agent.modules.embeddings.jivas_embeddings import JivasEmbeddings
+
 
 class VectorStoreAction(Action, Node):
     logger: static[Logger] = logging.getLogger(__name__)
@@ -64,21 +67,21 @@ class VectorStoreAction(Action, Node):
         else:
             knodes = data
         try:
-            failed = JacList([])
-            successful = JacList([])
+            failed = []
+            successful = []
             self.logger.info(f"Importing {knodes} ...")
             for knode in knodes:
                 if knode.get("id"):
-                    metadatas = JacList([knode["metadata"]])
+                    metadatas = [knode["metadata"]]
                     ids = self.add_texts(
-                        texts=JacList([str(knode["text"])]),
+                        texts=[str(knode["text"])],
                         metadatas=metadatas,
-                        ids=JacList([knode["id"]]),
+                        ids=[knode["id"]],
                     )
                 else:
-                    metadatas = JacList([knode["metadata"]])
+                    metadatas = [knode["metadata"]]
                     ids = self.add_texts(
-                        texts=JacList([str(knode["text"])]), metadatas=metadatas
+                        texts=[str(knode["text"])], metadatas=metadatas
                     )
                 if not ids:
                     self.logger.error(
@@ -124,8 +127,8 @@ class VectorStoreAction(Action, Node):
                         "exclude_fields": excluded_fields,
                     }
                 )
-                documents = JacList([])
-                hits = results.get("hits", JacList([]))
+                documents = []
+                hits = results.get("hits", [])
                 total = results.get("found", 0)
                 for item in hits:
                     documents.append(item.get("document"))
@@ -139,7 +142,7 @@ class VectorStoreAction(Action, Node):
                             "exclude_fields": excluded_fields,
                         }
                     )
-                    hits = results.get("hits", JacList([]))
+                    hits = results.get("hits", [])
                     for item in hits:
                         documents.append(item.get("document"))
                 if as_json:
@@ -288,7 +291,7 @@ class VectorStoreAction(Action, Node):
                     "severity": "error",
                 }
             embedded_texts = self.get_embedding_model().embed_documents(
-                JacList(["this is a test"])
+                ["this is a test"]
             )
             if not embedded_texts:
                 return {

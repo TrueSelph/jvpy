@@ -1,19 +1,23 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
-import traceback
 import os
+import traceback
 from logging import Logger
-from jivas.agent.modules.agentlib.utils import Utils
+from typing import Union
+
+from jac_cloud.core.architype import NodeAnchor
+from jaclang import *
+from jvserve.lib.file_interface import file_interface
+
+from jivas.agent.action.action import Action
+from jivas.agent.action.actions import Actions
+from jivas.agent.action.interact_action import InteractAction
 from jivas.agent.core import graph_node, purge
 from jivas.agent.core.graph_node import GraphNode
-from jivas.agent.action.action import Action
-from jivas.agent.action.interact_action import InteractAction
-from jivas.agent.action.actions import Actions
 from jivas.agent.memory.memory import Memory
-from typing import Union
-from jvserve.lib.file_interface import file_interface
-from jac_cloud.core.architype import NodeAnchor
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class Agent(GraphNode, Node):
     logger: static[Logger] = logging.getLogger(__name__)
@@ -91,7 +95,7 @@ class Agent(GraphNode, Node):
         with_healthcheck: bool = False,
     ) -> Agent:
         agent_node = super().update(data=data)
-        if with_actions and len(data.get("actions", JacList([]))) > 0:
+        if with_actions and len(data.get("actions", [])) > 0:
             if not jpr_api_key:
                 jpr_api_key = self.jpr_api_key
             self.get_actions().install_actions(
@@ -125,28 +129,27 @@ class Agent(GraphNode, Node):
     ) -> Union[str, dict]:
         try:
             agent_data = {}
-            agent_actions = JacList([])
-            agent_ignore_keys = JacList([])
-            action_ignore_keys = JacList(["_package"])
+            agent_actions = []
+            agent_ignore_keys = []
+            action_ignore_keys = ["_package"]
             if clean:
-                agent_ignore_keys = self.protected_attrs + JacList(["meta"])
-                action_ignore_keys = JacList(
-                    [
-                        "id",
-                        "description",
-                        "_package",
-                        "weight",
-                        "api_key",
-                        "secret_key",
-                        "token",
-                        "host",
-                        "port",
-                        "protocol",
-                        "api_key_name",
-                        "connection_timeout",
-                        "collection_name",
-                    ]
-                )
+                agent_ignore_keys = self.protected_attrs + ["meta"]
+                action_ignore_keys = [
+                    "id",
+                    "description",
+                    "_package",
+                    "weight",
+                    "api_key",
+                    "secret_key",
+                    "token",
+                    "host",
+                    "port",
+                    "protocol",
+                    "api_key_name",
+                    "connection_timeout",
+                    "collection_name",
+                ]
+
             agent_data = self.export(agent_ignore_keys, clean)
             agent_actions = self.spawn(
                 _export_actions(action_ignore_keys, clean)
@@ -346,8 +349,8 @@ class _healthcheck_actions(Walker):
 
 
 class _export_actions(Walker):
-    ignore_keys: list = field(gen=lambda: JacList(["_package"]))
-    action_nodes: list = field(gen=lambda: JacList([]))
+    ignore_keys: list = field(gen=lambda: ["_package"])
+    action_nodes: list = field(gen=lambda: [])
     node_index: dict = field(gen=lambda: {})
     clean: bool = field(False)
 
@@ -365,7 +368,7 @@ class _export_actions(Walker):
     @with_entry
     def on_action(self, here: Action) -> None:
         if here.label != "ExitInteractAction":
-            children = JacList([])
+            children = []
             if isinstance(here, InteractAction):
                 child_nodes = here.get_children()
                 for child in child_nodes:
@@ -388,7 +391,7 @@ class _export_actions(Walker):
             node_keys = list(self.node_index.keys())
             node_keys.reverse()
             for key in node_keys:
-                resolved_nodes = JacList([])
+                resolved_nodes = []
                 for child_id in self.node_index[key]["children"]:
                     resolved_nodes.append(self.node_index[child_id])
                     self.node_index.pop(child_id)

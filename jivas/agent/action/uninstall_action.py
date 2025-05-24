@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 import traceback
 from logging import Logger
+
+from jaclang import *
+
 from jivas.agent.core.agent import Agent
 from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
 
 class uninstall_action(agent_graph_walker, Walker):
     package_name: str = field("")
@@ -25,7 +29,7 @@ class uninstall_action(agent_graph_walker, Walker):
         try:
             action_removed = False
             actions_node = here.get_actions()
-            updated_actions = JacList([])
+            updated_actions = []
             for action in descriptor_data["actions"]:
                 if action.get("action") == self.package_name:
                     action_label = action.get("context", {}).get("label")

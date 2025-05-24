@@ -1,12 +1,16 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 import traceback
-from logging import Logger
 from datetime import datetime, timedelta
-from jivas.agent.core.agent_graph_walker import agent_graph_walker
-from jivas.agent.core.agent import Agent
+from logging import Logger
+
 from jac_cloud.core.architype import NodeAnchor
+from jaclang import *
+
+from jivas.agent.core.agent import Agent
+from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
 
 class get_channels_by_date(agent_graph_walker, Walker):
     start_date: str = field("")
@@ -69,7 +73,7 @@ class get_channels_by_date(agent_graph_walker, Walker):
                 ]
             )
             result = list(collection.aggregate(pipeline))
-            total = sum(JacList([doc["count"] for doc in result]))
+            total = sum([doc["count"] for doc in result])
             Jac.report({"total": total, "data": result})
         except Exception as e:
             self.logger.error(f"an exception occurred, {traceback.format_exc()}")

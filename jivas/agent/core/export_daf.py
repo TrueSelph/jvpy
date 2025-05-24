@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import io
 import zipfile
-from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
+from jaclang import *
+
 from jivas.agent.core.agent import Agent
+from jivas.agent.core.agent_graph_walker import agent_graph_walker
 from jivas.agent.modules.agentlib.utils import Utils
+
 
 class export_daf(agent_graph_walker, Walker):
     clean: bool = field(False)
@@ -40,7 +44,7 @@ class export_daf(agent_graph_walker, Walker):
                     "Unable to export memory. It may be blank or there may be a YAML conversion issue."
                 )
         if self.with_knowledge:
-            daf_knowledge = JacList([])
+            daf_knowledge = []
             try:
                 if vector_store_action := here.get_action(
                     action_label=here.get_vector_store_action()

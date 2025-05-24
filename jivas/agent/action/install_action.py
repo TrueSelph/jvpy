@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 import traceback
 from logging import Logger
+
+from jaclang import *
+
 from jivas.agent.core.agent import Agent
 from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
 
 class install_action(agent_graph_walker, Walker):
     reporting: bool = field(False)

@@ -1,9 +1,12 @@
 from __future__ import annotations
-from jaclang import *
+
 import json
 import logging
-from typing import Optional, Union
 from logging import Logger
+from typing import Optional, Union
+
+from jaclang import *
+
 from jivas.agent.action.interact_action import InteractAction
 from jivas.agent.action.interact_graph_walker import interact_graph_walker
 
@@ -89,9 +92,9 @@ class RetrievalInteractAction(InteractAction, Node):
             interactions=self.history_size,
             max_statement_length=self.max_statement_length,
         ):
-            prompt_messages = JacList([])
+            prompt_messages = []
             prompt_messages.extend(statements)
-            prompt_messages.extend(JacList([{"system": self.query_completion_prompt}]))
+            prompt_messages.extend([{"system": self.query_completion_prompt}])
             result = None
             if model_action := self.get_agent().get_action(
                 action_label=self.model_action
@@ -110,7 +113,7 @@ class RetrievalInteractAction(InteractAction, Node):
         return query
 
     def retrieve_context(self, query: str, filter: Optional[str] = "") -> list:
-        context_data = JacList([])
+        context_data = []
         if vector_store_action := self.get_agent().get_action(
             action_label=self.vector_store_action
         ):

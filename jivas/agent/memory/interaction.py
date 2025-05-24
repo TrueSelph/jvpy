@@ -1,32 +1,39 @@
 from __future__ import annotations
-from jaclang import *
+
 from datetime import datetime, timezone
-from jivas.agent.memory.data import Data
-from jivas.agent.memory.advance import Advance
-from jivas.agent.memory.retrace import Retrace
+
+from jaclang import *
+
 from jivas.agent.core.graph_node import GraphNode
-from jivas.agent.memory.interaction_response import InteractionResponse, TextInteractionMessage
+from jivas.agent.memory.advance import Advance
+from jivas.agent.memory.data import Data
+from jivas.agent.memory.interaction_response import (
+    InteractionResponse,
+    TextInteractionMessage,
+)
+from jivas.agent.memory.retrace import Retrace
 
 
 class Interaction(GraphNode, Node):
+
     agent_id: str = field("")
     channel: str = field("")
     utterance: str = field("")
     tokens: int = field(0)
     time_stamp: str = field(gen=lambda: str(datetime.now(timezone.utc).isoformat()))
-    trail: list = field(gen=lambda: JacList([]))
-    intents: list = field(gen=lambda: JacList([]))
+    trail: list = field(gen=lambda: [])
+    intents: list = field(gen=lambda: [])
     functions: dict = field(gen=lambda: {})
-    directives: list = field(gen=lambda: JacList([]))
+    directives: list = field(gen=lambda: [])
     context_data: dict = field(gen=lambda: {})
-    events: list = field(gen=lambda: JacList([]))
+    events: list = field(gen=lambda: [])
     response: dict = field(gen=lambda: {})
     data: dict = field(gen=lambda: {})
     closed: bool = field(False)
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.protected_attrs += JacList(["agent_id"])
+        self.protected_attrs += ["agent_id"]
 
     def attach_interaction(self, interaction_node: Interaction) -> None:
         self.connect(interaction_node, edge=Advance)
@@ -113,11 +120,11 @@ class Interaction(GraphNode, Node):
         if self.functions.get(action_label, None):
             self.functions[action_label].append(function)
         else:
-            self.functions[action_label] = JacList([function])
+            self.functions[action_label] = [function]
             self.add_intent(action_label)
 
     def get_functions(self, action_label: str) -> list:
-        return self.functions.get(action_label, JacList([]))
+        return self.functions.get(action_label, [])
 
     def is_closed(self) -> bool:
         return self.closed

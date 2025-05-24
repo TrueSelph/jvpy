@@ -1,9 +1,12 @@
 from __future__ import annotations
+
 from jaclang import *
+
 from jivas.agent.core.agent import Agent
-from jivas.agent.memory.memory import Memory
-from jivas.agent.memory.frame import Frame
 from jivas.agent.core.agent_graph_walker import agent_graph_walker
+from jivas.agent.memory.frame import Frame
+from jivas.agent.memory.memory import Memory
+
 
 class memory_walker(agent_graph_walker, Walker):
     session_id: str = field("")

@@ -1,13 +1,17 @@
 from __future__ import annotations
-from jaclang import *
+
+import json
 import logging
 import traceback
-import json
-from logging import Logger
 from datetime import datetime, timedelta
-from jivas.agent.core.agent_graph_walker import agent_graph_walker
-from jivas.agent.core.agent import Agent
+from logging import Logger
+
 from jac_cloud.core.architype import NodeAnchor
+from jaclang import *
+
+from jivas.agent.core.agent import Agent
+from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
 
 class get_interaction_logs(agent_graph_walker, Walker):
     start_date: str = field("")

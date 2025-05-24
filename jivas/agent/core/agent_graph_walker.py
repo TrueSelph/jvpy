@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
-from jivas.agent.core.app import App
+
+from jaclang import *
+
 from jivas.agent.core.agents import Agents
+from jivas.agent.core.app import App
 from jivas.agent.core.graph_walker import graph_walker
+
 
 class agent_graph_walker(graph_walker, Walker):
     agent_id: str = field("")

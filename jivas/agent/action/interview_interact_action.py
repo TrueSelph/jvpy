@@ -1,12 +1,15 @@
 from __future__ import annotations
-from jaclang import *
-from enum import Enum, auto
+
 import json
+from enum import Enum, auto, unique
 from typing import Union
-from enum import unique
+
+from jaclang import *
 from openai import OpenAI
+
 from jivas.agent.action.interact_action import InteractAction
 from jivas.agent.action.interact_graph_walker import interact_graph_walker
+
 
 class InterviewInteractAction(InteractAction, Node):
     model_action: str = field("LangChainModelAction")
@@ -187,7 +190,7 @@ class InterviewInteractAction(InteractAction, Node):
 
     def generate_intents(self) -> None:
         if not isinstance(self.question_index, dict):
-            return JacList([])
+            return []
         for field, item in self.question_index.items():
             description = item.get("constraints", {}).get("description", "")
             if not description:
@@ -243,7 +246,7 @@ class InterviewInteractAction(InteractAction, Node):
     def get_confirmation_directive(self, interview_session: InterviewSession) -> str:
         responses = interview_session.export().get("responses", {})
         if responses and isinstance(responses, dict) and (len(responses) > 0):
-            summary_lines = JacList([])
+            summary_lines = []
             for field, value in responses.items():
                 summary_lines.append(f"- **{field}**: {value}")
             responses = "\n".join(summary_lines)
@@ -280,10 +283,8 @@ class InterviewInteractAction(InteractAction, Node):
                 session_state = SessionState.OPEN
             return InterviewSession(
                 state=session_state,
-                all_fields=interview_session_data.get("all_fields", JacList([])),
-                required_fields=interview_session_data.get(
-                    "required_fields", JacList([])
-                ),
+                all_fields=interview_session_data.get("all_fields", []),
+                required_fields=interview_session_data.get("required_fields", []),
                 active_field=interview_session_data.get("active_field", ""),
                 responses=interview_session_data.get("responses", {}),
             )
@@ -299,8 +300,8 @@ class InterviewInteractAction(InteractAction, Node):
                 interview_session.set_response(field, response)
 
     def generate_extraction_prompt(self, question_index: dict) -> str:
-        entities_list = JacList([])
-        sample_json_lines = JacList([])
+        entities_list = []
+        sample_json_lines = []
         for key, details in question_index.items():
             constraints = details.get("constraints", {})
             if not constraints:
@@ -328,8 +329,8 @@ class InterviewInteractAction(InteractAction, Node):
     def generate_revision_extraction_prompt(
         self, interview_session: InterviewSession
     ) -> str:
-        entities_list = JacList([])
-        sample_json_lines = JacList([])
+        entities_list = []
+        sample_json_lines = []
         for key, details in self.question_index.items():
             constraints = details.get("constraints", {})
             if not constraints:
@@ -348,7 +349,7 @@ class InterviewInteractAction(InteractAction, Node):
             sample_json_lines.append(f"  '{key}': '<extracted value>'")
         responses = interview_session.export().get("responses", {})
         if responses and isinstance(responses, dict) and (len(responses) > 0):
-            summary_lines = JacList([])
+            summary_lines = []
             for field, value in responses.items():
                 summary_lines.append(f"- **{field}**: {value}")
             responses = "\n".join(summary_lines)
@@ -376,14 +377,14 @@ class InterviewInteractAction(InteractAction, Node):
         history: Union[bool, None] = None,
         json_only: bool = False,
     ) -> Union[str, dict, None]:
-        prompt_messages = JacList([])
+        prompt_messages = []
         if not prompt:
             return None
         use_history = self.history
         if history is not None:
             use_history = history
         if use_history:
-            prompt_messages = JacList([])
+            prompt_messages = []
             statements = visitor.frame_node.get_transcript_statements(
                 interactions=self.history_size,
                 max_statement_length=self.max_statement_length,
@@ -392,7 +393,7 @@ class InterviewInteractAction(InteractAction, Node):
             if statements:
                 prompt_messages.extend(statements)
                 self.logger.debug(f"history: {json.dumps(statements)}")
-            prompt_messages.extend(JacList([{"system": prompt}]))
+            prompt_messages.extend([{"system": prompt}])
         else:
             prompt_messages = JacList(
                 [{"system": prompt}, {"human": visitor.utterance}]
@@ -428,8 +429,8 @@ class SessionState(Enum):
 
 class InterviewSession(Obj):
     state: SessionState = field(gen=lambda: SessionState.OPEN)
-    all_fields: list = field(gen=lambda: JacList([]))
-    required_fields: list = field(gen=lambda: JacList([]))
+    all_fields: list = field(gen=lambda: [])
+    required_fields: list = field(gen=lambda: [])
     active_field: str = field("")
     responses: dict = field(gen=lambda: {})
     data: dict = field(gen=lambda: {})
@@ -452,7 +453,7 @@ class InterviewSession(Obj):
         return self.get_next_field() in self.get_required_fields()
 
     def get_answered_fields(self) -> list:
-        return list(self.responses.keys()) or JacList([])
+        return list(self.responses.keys()) or []
 
     def get_unanswered_fields(self) -> list:
         return JacList(

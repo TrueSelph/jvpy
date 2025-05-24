@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
-from jivas.agent.modules.agentlib.utils import Utils
-from jivas.agent.core.agent_graph_walker import agent_graph_walker
+
+from jaclang import *
+
 from jivas.agent.core.agent import Agent
+from jivas.agent.core.agent_graph_walker import agent_graph_walker
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class update_agent(agent_graph_walker, Walker):
     agent_data: dict = field(gen=lambda: {})

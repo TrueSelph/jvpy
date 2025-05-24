@@ -1,35 +1,39 @@
 from __future__ import annotations
-from jaclang import *
-import pytz
+
 import json
 import logging
 import traceback
-from typing import Optional
+from datetime import datetime, timedelta, timezone
 from logging import Logger
-from jivas.agent.modules.agentlib.utils import Utils
-from datetime import datetime, timezone, timedelta
+from typing import Optional
+
+import pytz
+from jac_cloud.core.architype import NodeAnchor
+from jaclang import *
+
 from jivas.agent.action.actions import Actions
 from jivas.agent.action.interact_action import InteractAction
-from jivas.agent.memory.memory import Memory
+from jivas.agent.action.interact_graph_walker import interact_graph_walker
+from jivas.agent.core.agent import Agent
 from jivas.agent.memory.frame import Frame
 from jivas.agent.memory.interaction import Interaction
 from jivas.agent.memory.interaction_response import (
-        InteractionResponse,
-        InteractionMessage,
-        SilentInteractionMessage,
-    )
-from jivas.agent.core.agent import Agent
-from jac_cloud.core.architype import NodeAnchor
-from jivas.agent.action.interact_graph_walker import interact_graph_walker
+    InteractionMessage,
+    InteractionResponse,
+    SilentInteractionMessage,
+)
+from jivas.agent.memory.memory import Memory
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class interact(interact_graph_walker, Walker):
-    
+
     logger: static[Logger] = logging.getLogger(__name__)
     agent_id: str = field("")
     session_id: str = field("")
     utterance: str = field("")
     channel: str = field("default")
-    data: list[dict] = field(gen=lambda: JacList([]))
+    data: list[dict] = field(gen=lambda: [])
     verbose: bool = field(False)
     tts: bool = field(False)
     streaming: bool = field(False)
@@ -160,10 +164,10 @@ class interact(interact_graph_walker, Walker):
         if not self.interaction_node:
             return False
         if self.data and isinstance(self.data, list):
-            required_fields = JacList(["label", "meta", "content"])
-            if all(JacList([isinstance(item, dict) for item in self.data])):
+            required_fields = ["label", "meta", "content"]
+            if all([isinstance(item, dict) for item in self.data]):
                 for item in self.data:
-                    if all(JacList([field in item for field in required_fields])):
+                    if all([field in item for field in required_fields]):
                         self.interaction_node.set_data_item(
                             label=item["label"],
                             meta=item["meta"],
@@ -213,7 +217,7 @@ class interact(interact_graph_walker, Walker):
                     return True
             message_window = self.frame_node.variable_get(key="message_window")
             if message_window:
-                for key in JacList(["start", "end"]):
+                for key in ["start", "end"]:
                     value = message_window.get(key)
                     if isinstance(value, str):
                         message_window[key] = datetime.strptime(
@@ -317,7 +321,7 @@ class interact(interact_graph_walker, Walker):
     def prepend_interact_action(self, interact_action: InteractAction) -> None:
         if self.dequeue_interact_action(interact_action):
             path = self.__jac__.next
-            self.__jac__.next = JacList([])
+            self.__jac__.next = []
             self.visit(interact_action)
             self.__jac__.next.extend(path)
             return self.__jac__.next
@@ -326,7 +330,7 @@ class interact(interact_graph_walker, Walker):
     def trim_interact_actions(
         self, index: InteractAction, interact_actions: list
     ) -> list:
-        trimmed = JacList([])
+        trimmed = []
         found = False
         for action in interact_actions:
             if not found and f"{action.id}" == f"{index.id}":

@@ -1,10 +1,14 @@
 from __future__ import annotations
-from jaclang import *
+
 import logging
 from logging import Logger
-from jivas.agent.modules.agentlib.utils import Utils
+
+from jaclang import *
+
 from jivas.agent.core.graph_node import GraphNode
 from jivas.agent.core.purge import purge
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class Agents(GraphNode, Node):
     logger: static[Logger] = logging.getLogger(__name__)
@@ -26,7 +30,7 @@ class Agents(GraphNode, Node):
         return None
 
     def delete_all(self) -> None:
-        agent_nodes = JacList([])
+        agent_nodes = []
         for agent_node in self.get_all():
             agent_nodes.append(self.delete(agent_node.id))
         return agent_nodes

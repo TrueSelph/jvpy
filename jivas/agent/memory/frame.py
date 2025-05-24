@@ -1,16 +1,23 @@
 from __future__ import annotations
-from jaclang import *
+
 from datetime import datetime, timezone
 from typing import Any, Optional
 from uuid import uuid4
-from jivas.agent.modules.agentlib.utils import Utils
-from jivas.agent.memory.interaction import Interaction
-from jivas.agent.memory.interaction_response import InteractionResponse, TextInteractionMessage
-from jivas.agent.core.graph_node import GraphNode
+
+from jaclang import *
+
 from jivas.agent.action.interact_action import InteractAction
-from jivas.agent.memory.tail import Tail
+from jivas.agent.core.graph_node import GraphNode
 from jivas.agent.memory.advance import Advance
+from jivas.agent.memory.interaction import Interaction
+from jivas.agent.memory.interaction_response import (
+    InteractionResponse,
+    TextInteractionMessage,
+)
 from jivas.agent.memory.retrace import Retrace
+from jivas.agent.memory.tail import Tail
+from jivas.agent.modules.agentlib.utils import Utils
+
 
 class Frame(GraphNode, Node):
     agent_id: str = field("")
@@ -25,7 +32,7 @@ class Frame(GraphNode, Node):
 
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.protected_attrs += JacList(["agent_id"])
+        self.protected_attrs += ["agent_id"]
 
     def variable_get(self, key: str, default: Optional[Any] = None) -> Any:
         if variable := self.variables.get(key):
@@ -163,7 +170,7 @@ class Frame(GraphNode, Node):
 class _get_transcript_statements(Walker):
     interactions: int = field(1)
     max_statement_length: int = field(0)
-    statements: list = field(gen=lambda: JacList([]))
+    statements: list = field(gen=lambda: [])
     last_interaction: Interaction = field(None)
     retrace_count: int = field(0)
     with_events: bool = field(False)
@@ -222,7 +229,7 @@ class _get_transcript_statements(Walker):
 
 
 class _get_interactions(Walker):
-    interactions: list = field(gen=lambda: JacList([]))
+    interactions: list = field(gen=lambda: [])
 
     class __specs__(Obj):
         private: static[bool] = True
